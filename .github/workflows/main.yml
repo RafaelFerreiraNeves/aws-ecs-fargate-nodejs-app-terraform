@@ -29,4 +29,3 @@ steps:
         --platform linux/amd64 \
         -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/node-app:latest \
         --push ./app
-```
