@@ -19,13 +19,13 @@ jobs:
            aws-region: ${{ secrets.AWS_REGION }}
 
        - name: Login to ECR
-  run: |
-  aws ecr get-login-password --region ${{ secrets.AWS_REGION }} 
-  | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+         run: |
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} 
+          | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
 
-* name: Build and Push (amd64)
-  run: |
-  docker buildx build 
-  --platform linux/amd64 
-  -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/node-app:latest 
-  --push ./app
+       - name: Build and Push (amd64)
+         run: |
+          docker buildx build 
+            --platform linux/amd64 
+            -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/node-app:latest 
+            --push ./app
