@@ -24,7 +24,6 @@ jobs:
           
        - name: Build and Push (amd64)
          run: |
-          docker buildx build 
-            --platform linux/amd64 
-            -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/node-app:latest 
-            --push ./app
+          - name: Build and Push
+         run: |
+          docker buildx build --platform linux/amd64 -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/node-app:latest --push ./app
