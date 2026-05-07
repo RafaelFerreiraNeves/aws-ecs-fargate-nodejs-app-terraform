@@ -32,7 +32,11 @@ jobs:
 
        - name: Ensure ECS Cluster exists
          run: |
-          aws ecs describe-clusters --clusters ${{ secrets.ECS_CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }} || aws ecs create-cluster --cluster-name ${{ secrets.ECS_CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
+           COUNT=$(aws ecs list-clusters --region us-east-1 --query "length(clusterArns[?contains(@, 'node-app-cluster')])")
+
+           if [ "$COUNT" = "0" ]; then
+             aws ecs create-cluster --cluster-name node-app-cluster --region us-east-1
+           fi
        
        - name: Download task definition 
          run: | 
