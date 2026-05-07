@@ -36,7 +36,7 @@ jobs:
       - name: Terraform Init
         run: terraform init
         
-        - name: Delete all ECR images
+      - name: Delete all ECR images
         run: |
           aws ecr describe-repositories \
             --repository-names node-app \
