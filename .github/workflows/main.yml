@@ -27,7 +27,8 @@ jobs:
           docker buildx build --platform linux/amd64 -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/node-app:latest --push ./app
 
        - name: Download task definition 
-         run: | aws ecs describe-task-definition  --task-definition node-app  --query taskDefinition > task-def.json  
+         run: | 
+          aws ecs describe-task-definition  --task-definition node-app  --query taskDefinition > task-def.json  
        
        - name: Render new task definition
          id: render
