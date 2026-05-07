@@ -30,6 +30,10 @@ jobs:
          run: |
           docker buildx build --platform linux/amd64 -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/node-app:latest --push ./app
 
+       - name: Ensure ECS Cluster exists
+         run: |
+          aws ecs describe-clusters --clusters ${{ secrets.ECS_CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }} || aws ecs create-cluster --cluster-name ${{ secrets.ECS_CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
+       
        - name: Download task definition 
          run: | 
           aws ecs describe-task-definition  --task-definition node-app  --query taskDefinition > task-def.json  
