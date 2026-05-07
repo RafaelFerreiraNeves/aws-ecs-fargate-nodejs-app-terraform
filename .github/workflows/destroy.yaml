@@ -35,7 +35,15 @@ jobs:
       # =========================
       - name: Terraform Init
         run: terraform init
+        
+      - name: Delete all ECR images
+        run: |
+          aws ecr batch-delete-image 
+            --repository-name node-app 
+            --image-ids "$(aws ecr list-images --repository-name node-app --query 'imageIds[*]' --output json)"
+            --region ${{ secrets.AWS_REGION }} 
 
+   
       # =========================
       # DESTROY INFRASTRUCTURE
       # =========================
