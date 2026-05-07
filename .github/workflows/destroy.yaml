@@ -38,10 +38,22 @@ jobs:
         
       - name: Delete all ECR images
         run: |
-          aws ecr batch-delete-image 
-            --repository-name node-app 
-            --image-ids "$(aws ecr list-images --repository-name node-app --query 'imageIds[*]' --output json)"
-            --region ${{ secrets.AWS_REGION }} 
+          IMAGES=$(aws ecr list-images \
+            --repository-name node-app \
+            --region ${{ secrets.AWS_REGION }} \
+            --query 'imageIds[*]' \
+            --output json)
+
+          echo "$IMAGES"
+
+          if [ "$IMAGES" != "[]" ]; then
+            aws ecr batch-delete-image \
+              --repository-name node-app \
+              --image-ids "$IMAGES" \
+              --region ${{ secrets.AWS_REGION }}
+          else
+            echo "No images found in ECR"
+          fi
 
    
       # =========================
