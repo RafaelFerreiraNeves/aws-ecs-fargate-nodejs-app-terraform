@@ -1,0 +1,79 @@
+name: Destroy Infrastructure
+
+on:
+  workflow_dispatch:
+
+jobs:
+  destroy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # =========================
+      # CHECKOUT
+      # =========================
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # =========================
+      # AWS CREDENTIALS
+      # =========================
+      - name: Configure AWS
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      # =========================
+      # TERRAFORM SETUP
+      # =========================
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      # =========================
+      # INIT TERRAFORM
+      # =========================
+      - name: Terraform Init
+        run: terraform init
+
+      # =========================
+      # DESTROY INFRASTRUCTURE
+      # =========================
+      - name: Terraform Destroy
+        run: terraform destroy -auto-approve
+
+      # =========================
+      # CLEAN ECS (SAFE DELETE FALLBACK)
+      # =========================
+      - name: Force delete ECS service (if still exists)
+        run: |
+          aws ecs update-service 
+            --cluster node-app-cluster 
+            --service node-app-service 
+            --desired-count 0 
+            --region ${{ secrets.AWS_REGION }} 
+
+          aws ecs delete-service 
+            --cluster node-app-cluster 
+            --service node-app-service 
+            --force 
+            --region ${{ secrets.AWS_REGION }} 
+
+      # =========================
+      # DELETE ECS CLUSTER (optional cleanup)
+      # =========================
+      - name: Delete ECS Cluster
+        run: |
+          aws ecs delete-cluster 
+            --cluster node-app-cluster 
+            --region ${{ secrets.AWS_REGION }} 
+
+      # =========================
+      # DELETE ECR REPOSITORY (optional)
+      # =========================
+      - name: Delete ECR Repository
+        run: |
+          aws ecr delete-repository 
+            --repository-name node-app 
+            --force 
+            --region ${{ secrets.AWS_REGION }} 
