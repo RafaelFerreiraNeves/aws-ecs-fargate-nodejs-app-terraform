@@ -36,23 +36,29 @@ jobs:
       - name: Terraform Init
         run: terraform init
         
-      - name: Delete all ECR images
+        - name: Delete all ECR images
         run: |
-          aws ecr list-images \
-            --repository-name node-app \
-            --region ${{ secrets.AWS_REGION }} \
-            --query 'imageIds[*]' \
-            --output json > images.json
+          aws ecr describe-repositories \
+            --repository-names node-app \
+            --region ${{ secrets.AWS_REGION }} > /dev/null 2>&1
 
-          cat images.json
+          if [ $? -eq 0 ]; then
 
-          if [ "$(cat images.json)" != "[]" ]; then
-            aws ecr batch-delete-image \
+            aws ecr list-images \
               --repository-name node-app \
               --region ${{ secrets.AWS_REGION }} \
-              --image-ids file://images.json
+              --query 'imageIds[*]' \
+              --output json > images.json
+
+            if [ "$(cat images.json)" != "[]" ]; then
+              aws ecr batch-delete-image \
+                --repository-name node-app \
+                --region ${{ secrets.AWS_REGION }} \
+                --image-ids file://images.json
+            fi
+
           else
-            echo "No images found"
+            echo "ECR repository does not exist"
           fi
 
    
