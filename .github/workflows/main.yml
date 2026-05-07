@@ -18,11 +18,23 @@ jobs:
            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
            aws-region: ${{ secrets.AWS_REGION }}
 
-       - name: Terraform Init
-         run: terraform init
+            # =========================
+      # SETUP TERRAFORM
+      # =========================
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
 
-       - name: Terraform Apply
-         run: terraform apply -auto-approve
+      # =========================
+      # TERRAFORM INIT
+      # =========================
+      - name: Terraform Init
+        run: terraform init
+
+      # =========================
+      # TERRAFORM APPLY
+      # =========================
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
 
        - name: Ensure ECR repository exists
          run: |
