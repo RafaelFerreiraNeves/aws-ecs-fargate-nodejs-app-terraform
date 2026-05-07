@@ -19,10 +19,9 @@ jobs:
            aws-region: ${{ secrets.AWS_REGION }}
 
        - name: Ensure ECR repository exists
-        run: |
-          aws ecr describe-repositories --repository-names node-app --region ${{ secrets.AWS_REGION }} 
-          aws ecr create-repository --repository-name node-app --region ${{ secrets.AWS_REGION }}
-
+         run: |
+          aws ecr describe-repositories --repository-names node-app --region ${{ secrets.AWS_REGION }} || aws ecr create-repository --repository-name node-app --region ${{ secrets.AWS_REGION }}
+ 
        - name: Login to ECR
          run: |
            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com 
