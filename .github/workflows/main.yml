@@ -18,6 +18,12 @@ jobs:
            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
            aws-region: ${{ secrets.AWS_REGION }}
 
+       - name: Terraform Init
+         run: terraform init
+
+       - name: Terraform Apply
+         run: terraform apply -auto-approve
+
        - name: Ensure ECR repository exists
          run: |
           aws ecr describe-repositories --repository-names node-app --region ${{ secrets.AWS_REGION }} || aws ecr create-repository --repository-name node-app --region ${{ secrets.AWS_REGION }}
