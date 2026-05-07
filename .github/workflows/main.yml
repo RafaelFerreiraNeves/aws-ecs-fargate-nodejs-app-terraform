@@ -51,7 +51,7 @@ jobs:
            image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/node-app:latest
 
        - name: Ensure ECS Service exists
-        run: |
+         run: |
           aws ecs describe-services --cluster node-app-cluster --services node-app-service --region us-east-1 || aws ecs create-service --cluster node-app-cluster --service-name node-app-service --task-definition node-app --desired-count 1 --launch-type FARGATE --region us-east-1
        
        - name: Deploy to ECS 
