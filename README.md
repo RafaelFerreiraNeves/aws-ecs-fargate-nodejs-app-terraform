@@ -172,8 +172,8 @@ Este projeto foi criado para praticar:
 - Networking AWS
 - Logging centralizado
 
----
-Autor
+
+# Autor
 
 Rafael Ferreira Neves
 
