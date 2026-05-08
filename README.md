@@ -177,6 +177,8 @@ Autor
 
 Rafael Ferreira Neves
 
+---
+
 #  Licença
 
 Projeto desenvolvido para fins educacionais e portfólio DevOps/Cloud.
