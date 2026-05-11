@@ -1,7 +1,7 @@
 const http = require('http');
 const { Pool } = require('pg');
 
-// 🔐 Configuração do banco
+//  Configuração do banco
 const pool = new Pool({
   host: process.env.DB_HOST,
   port: process.env.DB_PORT || 5432,
@@ -11,7 +11,7 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false },
 });
 
-// 🚀 Inicializa tabela
+//  Inicializa tabela
 async function initDB() {
   try {
     await pool.query(`
@@ -20,15 +20,15 @@ async function initDB() {
         name TEXT NOT NULL
       )
     `);
-    console.log("✅ Tabela 'users' pronta");
+    console.log("Tabela 'users' pronta");
   } catch (err) {
-    console.error("❌ Erro ao criar tabela:", err);
+    console.error("Erro ao criar tabela:", err);
   }
 }
 
 initDB();
 
-// 🌐 Servidor HTTP
+//  Servidor HTTP
 const server = http.createServer(async (req, res) => {
   // Health check (ALB usa isso)
   if (req.url === '/' && req.method === 'GET') {
@@ -59,7 +59,7 @@ const server = http.createServer(async (req, res) => {
 
     req.on('end', async () => {
       try {
-        console.log("📥 BODY RECEBIDO:", body);
+        console.log("BODY RECEBIDO:", body);
 
         if (!body) throw new Error("Body vazio");
 
@@ -73,7 +73,7 @@ const server = http.createServer(async (req, res) => {
           [name]
         );
 
-        console.log("✅ INSERT OK:", result.rows[0]);
+        console.log("INSERT OK:", result.rows[0]);
 
         res.writeHead(201, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(result.rows[0]));
@@ -94,7 +94,7 @@ const server = http.createServer(async (req, res) => {
   res.end('Not Found');
 });
 
-// 🔥 Start server
+//  Start server
 server.listen(3000, '0.0.0.0', () => {
   console.log('🚀 Server rodando na porta 3000');
 });
